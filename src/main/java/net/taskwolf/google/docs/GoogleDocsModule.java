@@ -1,30 +1,21 @@
 package net.taskwolf.google.docs;
 
-import com.google.common.collect.Lists;
 import com.google.inject.Injector;
-import net.taskwolf.core.CoreModule;
-import net.taskwolf.core.action.ActionFactory;
-import net.taskwolf.core.action.ActionInformation;
+import net.taskwolf.core.action.ActionRepository;
 import net.taskwolf.core.log.Log;
 import net.taskwolf.core.module.Module;
 import net.taskwolf.core.module.ModuleDescription;
 import net.taskwolf.core.module.ModuleInformation;
 import net.taskwolf.core.module.ModuleLoadPriority;
-import net.taskwolf.core.trigger.TriggerFactory;
-import net.taskwolf.core.trigger.TriggerInformation;
-import net.taskwolf.google.GoogleInjectionModule;
-
-import java.util.List;
+import net.taskwolf.core.trigger.TriggerRepository;
 
 @ModuleDescription(name = "google-docs", version = "1.0.0-SNAPSHOT",
   priority = ModuleLoadPriority.NEUTRAL)
 public final class GoogleDocsModule extends Module {
   private Log log;
-  private TriggerFactory triggerFactory;
-  private ActionFactory actionFactory;
 
   public GoogleDocsModule(Injector injector) {
-    super(injector.createChildInjector(GoogleInjectionModule.create()));
+    super(injector.createChildInjector(GoogleDocsInjectionModule.create()));
   }
 
   @Override
@@ -38,28 +29,18 @@ public final class GoogleDocsModule extends Module {
   }
 
   @Override
-  public TriggerFactory triggerFactory() {
-    return triggerFactory;
-  }
-
-  @Override
-  public ActionFactory actionFactory() {
-    return actionFactory;
-  }
-
-  @Override
   public ModuleInformation moduleInformation() {
     return ModuleInformation.create("Goggle Docs", "", "googledocs.png",
       ModuleInformation.Type.PUBLIC);
   }
 
   @Override
-  public List<TriggerInformation> triggerInformation() {
-    return Lists.newArrayList();
+  public TriggerRepository triggerRepository() {
+    return TriggerRepository.create();
   }
 
   @Override
-  public List<ActionInformation> actionInformation() {
-    return Lists.newArrayList();
+  public ActionRepository actionRepository() {
+    return ActionRepository.create();
   }
 }
