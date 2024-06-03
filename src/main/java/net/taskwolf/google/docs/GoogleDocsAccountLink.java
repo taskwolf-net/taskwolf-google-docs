@@ -67,6 +67,7 @@ public final class GoogleDocsAccountLink extends GoogleAccountLink {
 
   private List<GoogleDocument> findDocsDocuments(Drive service) {
     try {
+      //TODO: FILTER OUT FILES THAT ARE NO DOCS DOCUMENTS
       return service.files().list().execute().getFiles()
         .stream().map(file -> GoogleDocument.create(file.getId(), file.getName()))
         .toList();
