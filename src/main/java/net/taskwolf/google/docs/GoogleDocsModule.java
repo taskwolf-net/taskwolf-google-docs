@@ -18,6 +18,7 @@ import net.taskwolf.google.account.GoogleAccountDatabaseTable;
 import net.taskwolf.google.account.GoogleUserAccountDatabaseTable;
 import net.taskwolf.google.docs.action.create.DocumentCreateAction;
 import net.taskwolf.google.docs.action.delete.DocumentDeleteAction;
+import net.taskwolf.google.docs.action.upload.DocumentUploadAction;
 import net.taskwolf.google.docs.structure.GoogleDocumentDatabaseTable;
 import net.taskwolf.google.docs.trigger.create.DocumentCreateTrigger;
 import net.taskwolf.google.docs.trigger.delete.DocumentDeleteTrigger;
@@ -49,6 +50,8 @@ public final class GoogleDocsModule extends Module {
       .registerGoogleAccountLink(accountLink);
     googleAccountSelect = GoogleAccountSelect.create(googleAccountDatabaseTable,
       googleUserAccountDatabaseTable);
+    new java.io.File(System.getProperty("user.dir") +
+      "/files/").mkdirs();
   }
 
   @Override
@@ -90,6 +93,9 @@ public final class GoogleDocsModule extends Module {
       accountDatabaseTable, googleAccountSelect, databaseConnection,
       databaseKeyspace));
     repository.registerAction(DocumentDeleteAction.create(googleConfiguration,
+      accountDatabaseTable, googleAccountSelect, databaseConnection,
+      databaseKeyspace));
+    repository.registerAction(DocumentUploadAction.create(googleConfiguration,
       accountDatabaseTable, googleAccountSelect, databaseConnection,
       databaseKeyspace));
     return repository;

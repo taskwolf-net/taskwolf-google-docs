@@ -19,7 +19,7 @@ import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 
 @AllArgsConstructor(staticName = "create")
-public final class DocumentDeleteAction implements Action<DocumentCreateActionExecutor> {
+public final class DocumentDeleteAction implements Action<DocumentDeleteActionExecutor> {
   public static DocumentDeleteAction create(
     GoogleConfiguration googleConfiguration,
     GoogleAccountDatabaseTable googleAccountDatabaseTable,
@@ -76,9 +76,9 @@ public final class DocumentDeleteAction implements Action<DocumentCreateActionEx
   }
 
   @Override
-  public CompletableFuture<DocumentCreateActionExecutor> build(UUID actionId) {
+  public CompletableFuture<DocumentDeleteActionExecutor> build(UUID actionId) {
     return contentDatabaseTable.findContent(actionId).thenApply(content ->
-      DocumentCreateActionExecutor.create(googleConfiguration,
+      DocumentDeleteActionExecutor.create(googleConfiguration,
         googleAccountDatabaseTable, content.findCell(1).stringValue(),
         content.findCell(2).stringValue()));
   }
