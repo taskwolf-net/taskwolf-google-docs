@@ -19,7 +19,7 @@ import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 
 @AllArgsConstructor(staticName = "create")
-public final class DocumentAppendLineAction implements Action<DocumentCreateActionExecutor> {
+public final class DocumentAppendLineAction implements Action<DocumentAppendLineActionExecutor> {
   public static DocumentAppendLineAction create(
     GoogleConfiguration googleConfiguration,
     GoogleAccountDatabaseTable googleAccountDatabaseTable,
@@ -82,9 +82,9 @@ public final class DocumentAppendLineAction implements Action<DocumentCreateActi
   }
 
   @Override
-  public CompletableFuture<DocumentCreateActionExecutor> build(UUID actionId) {
+  public CompletableFuture<DocumentAppendLineActionExecutor> build(UUID actionId) {
     return contentDatabaseTable.findContent(actionId).thenApply(content ->
-      DocumentCreateActionExecutor.create(googleConfiguration,
+      DocumentAppendLineActionExecutor.create(googleConfiguration,
         googleAccountDatabaseTable, content.findCell(1).stringValue(),
         content.findCell(2).stringValue(), content.findCell(3).stringValue()));
   }

@@ -45,13 +45,15 @@ public final class DocumentAppendLineActionExecutor implements ActionExecutor {
         new GsonFactory(), credential)
         .setApplicationName("Taskwolf")
         .build();
-      var index = service.documents().get(documentId).execute().getBody()
-        .getContent().getLast().getEndIndex();
+      var content = service.documents().get(documentId).execute().getBody()
+        .getContent();
+      var index = content.get(content.size() - 1).getEndIndex() - 1;
       var requests = Lists.<Request>newArrayList();
       requests.add(new Request().setInsertText(new InsertTextRequest()
         .setText("\n" + documentLine).setLocation(new Location().setIndex(index))));
       var body = new BatchUpdateDocumentRequest().setRequests(requests);
-      return service.documents().batchUpdate(documentId, body).execute().getDocumentId();
+      return service.documents().batchUpdate(documentId, body)
+        .execute().getDocumentId();
     } catch (Exception exception) {
       exception.printStackTrace();
       return null;
