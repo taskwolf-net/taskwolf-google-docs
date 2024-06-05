@@ -1,6 +1,7 @@
 package net.taskwolf.google.docs;
 
 import com.google.inject.Injector;
+import net.taskwolf.core.CoreModule;
 import net.taskwolf.core.account.AccountLink;
 import net.taskwolf.core.action.ActionRepository;
 import net.taskwolf.core.database.DatabaseConnection;
@@ -20,6 +21,7 @@ import net.taskwolf.google.docs.action.append.DocumentAppendLineAction;
 import net.taskwolf.google.docs.action.create.DocumentCreateAction;
 import net.taskwolf.google.docs.action.delete.DocumentDeleteAction;
 import net.taskwolf.google.docs.structure.GoogleDocumentDatabaseTable;
+import net.taskwolf.google.docs.trigger.DocumentCheckSchedule;
 import net.taskwolf.google.docs.trigger.create.DocumentCreateTrigger;
 import net.taskwolf.google.docs.trigger.delete.DocumentDeleteTrigger;
 import net.taskwolf.google.select.GoogleAccountSelect;
@@ -30,6 +32,7 @@ public final class GoogleDocsModule extends Module {
   private Log log;
   private GoogleDocsAccountLink accountLink;
   private InputComponentSelect googleAccountSelect;
+  private DocumentCheckSchedule documentCheckSchedule;
 
   public GoogleDocsModule(Injector injector) {
     super(injector.createChildInjector(GoogleDocsInjectionModule.create()));
@@ -52,11 +55,21 @@ public final class GoogleDocsModule extends Module {
       googleUserAccountDatabaseTable);
     new java.io.File(System.getProperty("user.dir") +
       "/files/").mkdirs();
+    startDocumentCheckSchedule();
+  }
+
+  private void startDocumentCheckSchedule() {
+    documentCheckSchedule = DocumentCheckSchedule.create(
+      injector().getInstance(CoreModule.class),
+      injector().getInstance(GoogleConfiguration.class),
+      injector().getInstance(GoogleAccountDatabaseTable.class),
+      injector().getInstance(GoogleDocumentDatabaseTable.class));
+    documentCheckSchedule.start();
   }
 
   @Override
   public void disable() {
-
+    documentCheckSchedule.stop();
   }
 
   @Override
