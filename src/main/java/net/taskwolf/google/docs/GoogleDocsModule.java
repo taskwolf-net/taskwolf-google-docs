@@ -16,6 +16,7 @@ import net.taskwolf.google.GoogleAccountLinkRepository;
 import net.taskwolf.google.GoogleConfiguration;
 import net.taskwolf.google.account.GoogleAccountDatabaseTable;
 import net.taskwolf.google.account.GoogleUserAccountDatabaseTable;
+import net.taskwolf.google.docs.action.append.DocumentAppendLineAction;
 import net.taskwolf.google.docs.action.create.DocumentCreateAction;
 import net.taskwolf.google.docs.action.delete.DocumentDeleteAction;
 import net.taskwolf.google.docs.structure.GoogleDocumentDatabaseTable;
@@ -92,6 +93,9 @@ public final class GoogleDocsModule extends Module {
       accountDatabaseTable, googleAccountSelect, databaseConnection,
       databaseKeyspace));
     repository.registerAction(DocumentDeleteAction.create(googleConfiguration,
+      accountDatabaseTable, googleAccountSelect, databaseConnection,
+      databaseKeyspace));
+    repository.registerAction(DocumentAppendLineAction.create(googleConfiguration,
       accountDatabaseTable, googleAccountSelect, databaseConnection,
       databaseKeyspace));
     return repository;

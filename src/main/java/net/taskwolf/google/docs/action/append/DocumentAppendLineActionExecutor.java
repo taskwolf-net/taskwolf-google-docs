@@ -1,4 +1,4 @@
-package net.taskwolf.google.docs.action.create;
+package net.taskwolf.google.docs.action.append;
 
 import com.google.api.client.auth.oauth2.Credential;
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
@@ -19,44 +19,39 @@ import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 
 @AllArgsConstructor(staticName = "create")
-public final class DocumentCreateActionExecutor implements ActionExecutor {
+public final class DocumentAppendLineActionExecutor implements ActionExecutor {
   private final GoogleConfiguration configuration;
   private final GoogleAccountDatabaseTable googleAccountDatabaseTable;
   private final String googleAccount;
-  private String documentName;
-  private String documentContent;
+  private String documentId;
+  private String documentLine;
 
   @Override
   public CompletableFuture<ActionResult> execute(Map<String, Object> information) {
     var dissolve = PlaceholderDissolve.create(information);
-    documentName = dissolve.dissolve(documentName);
-    documentContent = dissolve.dissolve(documentContent);
+    documentId = dissolve.dissolve(documentId);
+    documentLine = dissolve.dissolve(documentLine);
     var futureResponse = new CompletableFuture<ActionResult>();
     googleAccountDatabaseTable.findAccount(googleAccount).thenAccept(account ->
       futureResponse.complete(ActionResult.success(buildInformation(
-        insertDocument(GoogleCredential.of(configuration.clientId(),
+        appendLineToDocument(GoogleCredential.of(configuration.clientId(),
           configuration.clientSecret(), account).buildCredential())))));
     return futureResponse;
   }
 
-  private String insertDocument(Credential credential) {
+  private String appendLineToDocument(Credential credential) {
     try {
       var service = new Docs.Builder(GoogleNetHttpTransport.newTrustedTransport(),
         new GsonFactory(), credential)
         .setApplicationName("Taskwolf")
         .build();
-      var document = new Document();
-      document.setTitle(documentName);
-      var response = service.documents().create(document).execute();
-      if (documentContent != null) {
-        var requests = Lists.<Request>newArrayList();
-        requests.add(new Request().setInsertText(new InsertTextRequest()
-          .setText(documentContent).setLocation(new Location().setIndex(1))));
-        var body = new BatchUpdateDocumentRequest().setRequests(requests);
-        return service.documents().batchUpdate(response.getDocumentId(), body)
-          .execute().getDocumentId();
-      }
-      return response.getDocumentId();
+      var index = service.documents().get(documentId).execute().getBody()
+        .getContent().getLast().getEndIndex();
+      var requests = Lists.<Request>newArrayList();
+      requests.add(new Request().setInsertText(new InsertTextRequest()
+        .setText("\n" + documentLine).setLocation(new Location().setIndex(index))));
+      var body = new BatchUpdateDocumentRequest().setRequests(requests);
+      return service.documents().batchUpdate(documentId, body).execute().getDocumentId();
     } catch (Exception exception) {
       exception.printStackTrace();
       return null;
@@ -69,7 +64,7 @@ public final class DocumentCreateActionExecutor implements ActionExecutor {
     }
     var information = Maps.<String, Object>newHashMap();
     information.put("documentId", documentId);
-    information.put("documentName", documentName);
+    information.put("documentLine", documentLine);
     return information;
   }
 }

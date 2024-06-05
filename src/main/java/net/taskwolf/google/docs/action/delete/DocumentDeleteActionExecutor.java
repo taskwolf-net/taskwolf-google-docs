@@ -29,14 +29,14 @@ public final class DocumentDeleteActionExecutor implements ActionExecutor {
     documentId = dissolve.dissolve(documentId);
     var futureResponse = new CompletableFuture<ActionResult>();
     googleAccountDatabaseTable.findAccount(googleAccount)
-      .thenAccept(account -> insertDocument(GoogleCredential.of(configuration.clientId(),
+      .thenAccept(account -> deleteDocument(GoogleCredential.of(configuration.clientId(),
         configuration.clientSecret(), account).buildCredential()))
       .thenAccept(value -> futureResponse.complete(ActionResult.success(
         buildInformation())));
     return futureResponse;
   }
 
-  private void insertDocument(Credential credential) {
+  private void deleteDocument(Credential credential) {
     try {
       var service = new Drive.Builder(GoogleNetHttpTransport.newTrustedTransport(),
         new GsonFactory(), credential)
