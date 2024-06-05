@@ -4,7 +4,8 @@ import com.google.api.client.auth.oauth2.Credential;
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.json.gson.GsonFactory;
 import com.google.api.services.docs.v1.Docs;
-import com.google.api.services.docs.v1.model.Document;
+import com.google.api.services.docs.v1.model.*;
+import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import lombok.AllArgsConstructor;
 import net.taskwolf.core.action.ActionExecutor;
@@ -23,6 +24,7 @@ public final class DocumentCreateActionExecutor implements ActionExecutor {
   private final GoogleAccountDatabaseTable googleAccountDatabaseTable;
   private final String googleAccount;
   private String documentName;
+  private String documentContent;
 
   @Override
   public CompletableFuture<ActionResult> execute(Map<String, Object> information) {
@@ -44,7 +46,15 @@ public final class DocumentCreateActionExecutor implements ActionExecutor {
         .build();
       var document = new Document();
       document.setTitle(documentName);
-      return service.documents().create(document).setFields("id").execute();
+      var response = service.documents().create(document).execute();
+      if (documentContent != null) {
+        var requests = Lists.<Request>newArrayList();
+        requests.add(new Request().setInsertText(new InsertTextRequest()
+          .setText(documentContent).setLocation(new Location().setIndex(1))));
+        var body = new BatchUpdateDocumentRequest().setRequests(requests);
+        service.documents().batchUpdate(response.getDocumentId(), body).execute();
+      }
+      return response;
     } catch (Exception exception) {
       exception.printStackTrace();
       return null;
