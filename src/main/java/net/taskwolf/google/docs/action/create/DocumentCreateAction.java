@@ -55,9 +55,9 @@ public final class DocumentCreateAction implements Action<DocumentCreateActionEx
         "documentName", "google.docs.action.document.create.input.document.name.description", InputComponentDataType.TEXT))
       .withInputVariable(InputComponentVariable.createOptional("google.docs.action.document.create.input.document.content.name",
         "documentContent", "google.docs.action.document.create.input.document.content.description", InputComponentDataType.TEXT))
-      .withOutputVariable(OutputComponentVariable.create("google.drive.action.document.create.output.document.id", "documentId"))
-      .withOutputVariable(OutputComponentVariable.create("google.drive.action.document.create.output.document.name", "documentName"))
-      .withOutputVariable(OutputComponentVariable.create("google.drive.action.document.create.output.document.content", "documentContent"))
+      .withOutputVariable(OutputComponentVariable.create("google.docs.action.document.create.output.document.id", "documentId"))
+      .withOutputVariable(OutputComponentVariable.create("google.docs.action.document.create.output.document.name", "documentName"))
+      .withOutputVariable(OutputComponentVariable.create("google.docs.action.document.create.output.document.content", "documentContent"))
       .build();
   }
 
