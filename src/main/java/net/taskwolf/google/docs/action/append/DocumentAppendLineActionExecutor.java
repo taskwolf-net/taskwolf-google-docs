@@ -32,7 +32,7 @@ public final class DocumentAppendLineActionExecutor implements ActionExecutor {
     documentId = dissolve.dissolve(documentId);
     documentLine = dissolve.dissolve(documentLine);
     var futureResponse = new CompletableFuture<ActionResult>();
-    googleAccountDatabaseTable.findAccount(googleAccount).thenAccept(account ->
+    googleAccountDatabaseTable.findAccount(googleAccount).thenAcceptAsync(account ->
       futureResponse.complete(ActionResult.success(buildInformation(
         appendLineToDocument(GoogleCredential.of(configuration.clientId(),
           configuration.clientSecret(), account).buildCredential())))));

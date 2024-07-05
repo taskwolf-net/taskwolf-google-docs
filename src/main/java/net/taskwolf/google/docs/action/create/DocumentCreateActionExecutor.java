@@ -32,7 +32,7 @@ public final class DocumentCreateActionExecutor implements ActionExecutor {
     documentName = dissolve.dissolve(documentName);
     documentContent = dissolve.dissolve(documentContent);
     var futureResponse = new CompletableFuture<ActionResult>();
-    googleAccountDatabaseTable.findAccount(googleAccount).thenAccept(account ->
+    googleAccountDatabaseTable.findAccount(googleAccount).thenAcceptAsync(account ->
       futureResponse.complete(ActionResult.success(buildInformation(
         insertDocument(GoogleCredential.of(configuration.clientId(),
           configuration.clientSecret(), account).buildCredential())))));

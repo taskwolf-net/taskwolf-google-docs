@@ -47,7 +47,7 @@ public final class GoogleDocsAccountLink extends GoogleAccountLink {
   public void registerAccount(UUID id, String identifier) throws Exception {
     super.registerAccount(id, identifier);
     googleAccountDatabaseTable.findAccount(identifier)
-      .thenApply(this::createDriveService).thenApply(this::findDocsDocuments)
+      .thenApply(this::createDriveService).thenApplyAsync(this::findDocsDocuments)
       .thenAccept(documents -> googleDocumentDatabaseTable.insertDocuments(
         identifier, documents));
   }

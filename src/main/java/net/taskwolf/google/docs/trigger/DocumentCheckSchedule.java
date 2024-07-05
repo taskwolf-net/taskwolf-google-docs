@@ -71,7 +71,7 @@ public final class DocumentCheckSchedule {
     for (var googleId : entries.keySet()) {
       var accountTriggers = entries.get(googleId);
       googleAccountDatabaseTable.findAccount(googleId)
-        .thenApply(this::createDriveService).thenApply(this::listDocsDocuments)
+        .thenApply(this::createDriveService).thenApplyAsync(this::listDocsDocuments)
         .thenAccept(currentDocuments -> googleDocumentDatabaseTable
           .findDocuments(googleId).thenAccept(previousDocuments ->
             processDocumentTriggers(googleId, currentDocuments,

@@ -29,7 +29,7 @@ public final class DocumentDeleteActionExecutor implements ActionExecutor {
     documentId = dissolve.dissolve(documentId);
     var futureResponse = new CompletableFuture<ActionResult>();
     googleAccountDatabaseTable.findAccount(googleAccount)
-      .thenAccept(account -> deleteDocument(GoogleCredential.of(configuration.clientId(),
+      .thenAcceptAsync(account -> deleteDocument(GoogleCredential.of(configuration.clientId(),
         configuration.clientSecret(), account).buildCredential()))
       .thenAccept(value -> futureResponse.complete(ActionResult.success(
         buildInformation())));
