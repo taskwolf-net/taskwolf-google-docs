@@ -32,20 +32,20 @@ public final class GoogleDocumentDatabaseTable extends DatabaseTable {
   }
 
   public void updateDocuments(String accountId, List<GoogleDocument> documents) {
-    update(DatabaseCell.create(accountId), DatabaseRow.of(accountId,
+    update(accountId, DatabaseRow.of(accountId,
       documents.stream().map(GoogleDocument::toJson).toList()));
   }
 
   public void deleteDocuments(String accountId) {
-    delete(DatabaseCell.create(accountId));
+    delete(accountId);
   }
 
   public CompletableFuture<Boolean> documentsExists(String accountId) {
-    return exists(DatabaseCell.create(accountId));
+    return exists(accountId);
   }
 
   public CompletableFuture<List<GoogleDocument>> findDocuments(String accountId) {
-    return selectRow(DatabaseCell.create(accountId)).thenApply(row ->
+    return selectRow(accountId).thenApply(row ->
       row.findCell(1).<String>listValue().stream().map(GoogleDocument::of).toList());
   }
 }
