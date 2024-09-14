@@ -1,4 +1,4 @@
-package net.taskwolf.google.docs.structure;
+package com.dulno.google.docs.structure;
 
 import com.google.common.collect.Maps;
 import lombok.Getter;

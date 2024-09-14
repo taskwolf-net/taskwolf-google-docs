@@ -1,4 +1,4 @@
-package net.taskwolf.google.docs;
+package com.dulno.google.docs;
 
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.json.gson.GsonFactory;
@@ -6,14 +6,14 @@ import com.google.api.services.docs.v1.DocsScopes;
 import com.google.api.services.drive.Drive;
 import com.google.api.services.drive.DriveScopes;
 import com.google.common.collect.Lists;
-import net.taskwolf.google.GoogleAccountLink;
-import net.taskwolf.google.GoogleConfiguration;
-import net.taskwolf.google.account.GoogleAccount;
-import net.taskwolf.google.account.GoogleAccountDatabaseTable;
-import net.taskwolf.google.account.GoogleCredential;
-import net.taskwolf.google.account.GoogleUserAccountDatabaseTable;
-import net.taskwolf.google.docs.structure.GoogleDocument;
-import net.taskwolf.google.docs.structure.GoogleDocumentDatabaseTable;
+import com.dulno.google.GoogleAccountLink;
+import com.dulno.google.GoogleConfiguration;
+import com.dulno.google.account.GoogleAccount;
+import com.dulno.google.account.GoogleAccountDatabaseTable;
+import com.dulno.google.account.GoogleCredential;
+import com.dulno.google.account.GoogleUserAccountDatabaseTable;
+import com.dulno.google.docs.structure.GoogleDocument;
+import com.dulno.google.docs.structure.GoogleDocumentDatabaseTable;
 
 import java.util.List;
 import java.util.UUID;
@@ -58,7 +58,7 @@ public final class GoogleDocsAccountLink extends GoogleAccountLink {
         googleConfiguration.clientSecret(), account).buildCredential();
       return new Drive.Builder(GoogleNetHttpTransport.newTrustedTransport(),
         new GsonFactory(), credential)
-        .setApplicationName("Taskwolf")
+        .setApplicationName("Dulno")
         .build();
     } catch (Exception ignored) {
       return null;

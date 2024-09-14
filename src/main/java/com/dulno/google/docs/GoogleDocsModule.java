@@ -1,30 +1,30 @@
-package net.taskwolf.google.docs;
+package com.dulno.google.docs;
 
 import com.google.inject.Injector;
-import net.taskwolf.core.CoreModule;
-import net.taskwolf.core.account.AccountLink;
-import net.taskwolf.core.action.ActionRepository;
-import net.taskwolf.core.database.DatabaseConnection;
-import net.taskwolf.core.database.DatabaseKeyspace;
-import net.taskwolf.core.log.Log;
-import net.taskwolf.core.module.Module;
-import net.taskwolf.core.module.ModuleDescription;
-import net.taskwolf.core.module.ModuleInformation;
-import net.taskwolf.core.module.ModuleLoadPriority;
-import net.taskwolf.core.trigger.TriggerRepository;
-import net.taskwolf.core.workflow.component.input.InputComponentSelect;
-import net.taskwolf.google.GoogleAccountLinkRepository;
-import net.taskwolf.google.GoogleConfiguration;
-import net.taskwolf.google.account.GoogleAccountDatabaseTable;
-import net.taskwolf.google.account.GoogleUserAccountDatabaseTable;
-import net.taskwolf.google.docs.action.append.DocumentAppendLineAction;
-import net.taskwolf.google.docs.action.create.DocumentCreateAction;
-import net.taskwolf.google.docs.action.delete.DocumentDeleteAction;
-import net.taskwolf.google.docs.structure.GoogleDocumentDatabaseTable;
-import net.taskwolf.google.docs.trigger.DocumentCheckSchedule;
-import net.taskwolf.google.docs.trigger.create.DocumentCreateTrigger;
-import net.taskwolf.google.docs.trigger.delete.DocumentDeleteTrigger;
-import net.taskwolf.google.select.GoogleAccountSelect;
+import com.dulno.core.CoreModule;
+import com.dulno.core.account.AccountLink;
+import com.dulno.core.action.ActionRepository;
+import com.dulno.core.database.DatabaseConnection;
+import com.dulno.core.database.DatabaseKeyspace;
+import com.dulno.core.log.Log;
+import com.dulno.core.module.Module;
+import com.dulno.core.module.ModuleDescription;
+import com.dulno.core.module.ModuleInformation;
+import com.dulno.core.module.ModuleLoadPriority;
+import com.dulno.core.trigger.TriggerRepository;
+import com.dulno.core.workflow.component.input.InputComponentSelect;
+import com.dulno.google.GoogleAccountLinkRepository;
+import com.dulno.google.GoogleConfiguration;
+import com.dulno.google.account.GoogleAccountDatabaseTable;
+import com.dulno.google.account.GoogleUserAccountDatabaseTable;
+import com.dulno.google.docs.action.append.DocumentAppendLineAction;
+import com.dulno.google.docs.action.create.DocumentCreateAction;
+import com.dulno.google.docs.action.delete.DocumentDeleteAction;
+import com.dulno.google.docs.structure.GoogleDocumentDatabaseTable;
+import com.dulno.google.docs.trigger.DocumentCheckSchedule;
+import com.dulno.google.docs.trigger.create.DocumentCreateTrigger;
+import com.dulno.google.docs.trigger.delete.DocumentDeleteTrigger;
+import com.dulno.google.select.GoogleAccountSelect;
 
 @ModuleDescription(name = "google-docs", version = "1.0.0-SNAPSHOT",
   priority = ModuleLoadPriority.NEUTRAL)

@@ -1,16 +1,16 @@
-package net.taskwolf.google.docs.trigger.create;
+package com.dulno.google.docs.trigger.delete;
 
 import com.google.common.collect.Lists;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
-import net.taskwolf.core.database.*;
-import net.taskwolf.core.database.condition.DatabaseCondition;
-import net.taskwolf.core.trigger.Trigger;
-import net.taskwolf.core.trigger.TriggerContentDatabaseTable;
-import net.taskwolf.core.trigger.TriggerInformation;
-import net.taskwolf.core.workflow.component.input.InputComponentSelect;
-import net.taskwolf.core.workflow.component.input.InputComponentVariable;
-import net.taskwolf.core.workflow.component.output.OutputComponentVariable;
+import com.dulno.core.database.*;
+import com.dulno.core.trigger.Trigger;
+import com.dulno.core.trigger.TriggerContentDatabaseTable;
+import com.dulno.core.trigger.TriggerInformation;
+import com.dulno.core.database.condition.DatabaseCondition;
+import com.dulno.core.workflow.component.input.InputComponentSelect;
+import com.dulno.core.workflow.component.input.InputComponentVariable;
+import com.dulno.core.workflow.component.output.OutputComponentVariable;
 
 import java.util.List;
 import java.util.Map;
@@ -18,16 +18,16 @@ import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
-public final class DocumentCreateTrigger implements Trigger {
-  public static DocumentCreateTrigger create(
+public final class DocumentDeleteTrigger implements Trigger {
+  public static DocumentDeleteTrigger create(
     InputComponentSelect googleAccountSelect,
     DatabaseConnection databaseConnection, DatabaseKeyspace databaseKeyspace
   ) {
     var contentColumns = Lists.<DatabaseColumn>newArrayList();
     contentColumns.add(DatabaseColumn.create("googleAccount", DatabaseDataType.TEXT));
-    return new DocumentCreateTrigger(googleAccountSelect,
+    return new DocumentDeleteTrigger(googleAccountSelect,
       TriggerContentDatabaseTable.create(databaseConnection, databaseKeyspace,
-        "trigger_google_docs_document_create", contentColumns));
+        "trigger_google_docs_document_delete", contentColumns));
   }
 
   private final InputComponentSelect googleAccountSelect;
@@ -35,18 +35,18 @@ public final class DocumentCreateTrigger implements Trigger {
 
   @Override
   public String type() {
-    return "google-docs-document-create-trigger";
+    return "google-docs-document-delete-trigger";
   }
 
   @Override
   public TriggerInformation information() {
     return TriggerInformation.builder()
-      .withName("google.docs.trigger.document.create.name")
-      .withDescription("google.docs.trigger.document.create.description")
-      .withInputVariable(InputComponentVariable.createSelect("google.docs.trigger.document.create.input.account.name",
-        "googleAccount", "google.docs.trigger.document.create.input.account.description", googleAccountSelect))
-      .withOutputVariable(OutputComponentVariable.create("google.docs.trigger.document.create.output.document.id", "documentId"))
-      .withOutputVariable(OutputComponentVariable.create("google.docs.trigger.document.create.output.document.name", "documentName"))
+      .withName("google.docs.trigger.document.delete.name")
+      .withDescription("google.docs.trigger.document.delete.description")
+      .withInputVariable(InputComponentVariable.createSelect("google.docs.trigger.document.delete.input.account.name",
+        "googleAccount", "google.docs.trigger.document.delete.input.account.description", googleAccountSelect))
+      .withOutputVariable(OutputComponentVariable.create("google.docs.trigger.document.delete.output.document.id", "documentId"))
+      .withOutputVariable(OutputComponentVariable.create("google.docs.trigger.document.delete.output.document.name", "documentName"))
       .build();
   }
 
@@ -78,4 +78,5 @@ public final class DocumentCreateTrigger implements Trigger {
     return contentDatabaseTable.deleteContent(triggerId);
   }
 }
+
 

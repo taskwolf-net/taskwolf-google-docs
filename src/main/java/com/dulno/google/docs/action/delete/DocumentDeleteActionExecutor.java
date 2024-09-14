@@ -1,4 +1,4 @@
-package net.taskwolf.google.docs.action.delete;
+package com.dulno.google.docs.action.delete;
 
 import com.google.api.client.auth.oauth2.Credential;
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
@@ -6,12 +6,12 @@ import com.google.api.client.json.gson.GsonFactory;
 import com.google.api.services.drive.Drive;
 import com.google.common.collect.Maps;
 import lombok.AllArgsConstructor;
-import net.taskwolf.core.action.ActionExecutor;
-import net.taskwolf.core.action.ActionResult;
-import net.taskwolf.core.workflow.placeholder.PlaceholderDissolve;
-import net.taskwolf.google.GoogleConfiguration;
-import net.taskwolf.google.account.GoogleAccountDatabaseTable;
-import net.taskwolf.google.account.GoogleCredential;
+import com.dulno.core.action.ActionExecutor;
+import com.dulno.core.action.ActionResult;
+import com.dulno.core.workflow.placeholder.PlaceholderDissolve;
+import com.dulno.google.GoogleConfiguration;
+import com.dulno.google.account.GoogleAccountDatabaseTable;
+import com.dulno.google.account.GoogleCredential;
 
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
@@ -40,7 +40,7 @@ public final class DocumentDeleteActionExecutor implements ActionExecutor {
     try {
       var service = new Drive.Builder(GoogleNetHttpTransport.newTrustedTransport(),
         new GsonFactory(), credential)
-        .setApplicationName("Taskwolf")
+        .setApplicationName("Dulno")
         .build();
       service.files().delete(documentId).execute();
     } catch (Exception exception) {
