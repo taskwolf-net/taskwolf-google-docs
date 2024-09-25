@@ -9,7 +9,6 @@ import com.dulno.core.database.DatabaseKeyspace;
 import com.dulno.google.GoogleConfiguration;
 import com.dulno.google.account.GoogleAccountDatabaseTable;
 import com.dulno.google.account.GoogleUserAccountDatabaseTable;
-import com.dulno.google.docs.structure.GoogleDocumentDatabaseTable;
 
 @RequiredArgsConstructor(staticName = "create")
 public final class GoogleDocsInjectionModule extends AbstractModule {
@@ -40,16 +39,5 @@ public final class GoogleDocsInjectionModule extends AbstractModule {
     googleUserAccountDatabaseTable.createIfNotExists();
     googleUserAccountDatabaseTable.createIndexIfNotExists("accounts");
     return googleUserAccountDatabaseTable;
-  }
-
-  @Provides
-  @Singleton
-  GoogleDocumentDatabaseTable provideGoogleDocumentDatabaseTable(
-    DatabaseConnection connection, DatabaseKeyspace keyspace
-  ) {
-    var googleDocumentDatabaseTable = GoogleDocumentDatabaseTable.create(
-      connection, keyspace);
-    googleDocumentDatabaseTable.createIfNotExists();
-    return googleDocumentDatabaseTable;
   }
 }

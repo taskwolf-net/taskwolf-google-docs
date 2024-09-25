@@ -57,7 +57,6 @@ dependencies {
   compileOnly("org.springframework.boot:spring-boot-starter-web:3.2.5")
 
   implementation("com.google.apis:google-api-services-docs:v1-rev20220609-2.0.0")
-  implementation("com.google.apis:google-api-services-drive:v3-rev20220815-2.0.0")
 }
 
 tasks.test {
