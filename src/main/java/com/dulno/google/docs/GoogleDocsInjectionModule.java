@@ -3,6 +3,7 @@ package com.dulno.google.docs;
 import com.google.inject.AbstractModule;
 import com.google.inject.Provides;
 import com.google.inject.Singleton;
+import com.google.inject.name.Named;
 import lombok.RequiredArgsConstructor;
 import com.dulno.core.database.DatabaseConnection;
 import com.dulno.core.database.DatabaseKeyspace;
@@ -14,12 +15,7 @@ import com.dulno.google.account.GoogleUserAccountDatabaseTable;
 public final class GoogleDocsInjectionModule extends AbstractModule {
   @Provides
   @Singleton
-  GoogleConfiguration provideGoogleConfiguration() throws Exception {
-    return GoogleConfiguration.createAndLoad();
-  }
-
-  @Provides
-  @Singleton
+  @Named("googleDocsAccount")
   GoogleAccountDatabaseTable provideGoogleAccountDatabaseTable(
     DatabaseConnection connection, DatabaseKeyspace keyspace
   ) {
@@ -31,6 +27,7 @@ public final class GoogleDocsInjectionModule extends AbstractModule {
 
   @Provides
   @Singleton
+  @Named("googleDocsUserAccount")
   GoogleUserAccountDatabaseTable provideGoogleUserAccountDatabaseTable(
     DatabaseConnection connection, DatabaseKeyspace keyspace
   ) {

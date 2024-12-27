@@ -18,11 +18,16 @@ import com.dulno.google.account.GoogleUserAccountDatabaseTable;
 import com.dulno.google.docs.action.append.DocumentAppendLineAction;
 import com.dulno.google.docs.action.create.DocumentCreateAction;
 import com.dulno.google.select.GoogleAccountSelect;
+import com.google.inject.Key;
+import com.google.inject.name.Names;
 
 @ModuleDescription(name = "google-docs", version = "1.0.0-SNAPSHOT",
   priority = ModuleLoadPriority.NEUTRAL)
 public final class GoogleDocsModule extends Integration {
   private Log log;
+  private GoogleConfiguration googleConfiguration;
+  private GoogleAccountDatabaseTable googleAccountDatabaseTable;
+  private GoogleUserAccountDatabaseTable googleUserAccountDatabaseTable;
   private GoogleDocsAccountLink accountLink;
   private InputComponentSelect googleAccountSelect;
 
@@ -33,12 +38,12 @@ public final class GoogleDocsModule extends Integration {
   @Override
   public void enable() throws Exception {
     log = injector().getInstance(Log.class).subLog("Google Docs");
-    var googleAccountDatabaseTable = injector().getInstance(
-      GoogleAccountDatabaseTable.class);
-    var googleUserAccountDatabaseTable = injector().getInstance(
-      GoogleUserAccountDatabaseTable.class);
-    accountLink = GoogleDocsAccountLink.create(
-      injector().getInstance(GoogleConfiguration.class),
+    googleConfiguration = GoogleConfiguration.createAndLoad();
+    googleAccountDatabaseTable = injector().getInstance(Key.get(
+      GoogleAccountDatabaseTable.class, Names.named("googleDocsAccount")));
+    googleUserAccountDatabaseTable = injector().getInstance(Key.get(
+      GoogleUserAccountDatabaseTable.class, Names.named("googleDocsUserAccount")));
+    accountLink = GoogleDocsAccountLink.create(googleConfiguration,
       googleAccountDatabaseTable, googleUserAccountDatabaseTable);
     injector().getInstance(GoogleAccountLinkRepository.class)
       .registerGoogleAccountLink(accountLink);
@@ -68,14 +73,12 @@ public final class GoogleDocsModule extends Integration {
   public ActionRepository actionRepository() {
     var databaseConnection = injector().getInstance(DatabaseConnection.class);
     var databaseKeyspace = injector().getInstance(DatabaseKeyspace.class);
-    var googleConfiguration = injector().getInstance(GoogleConfiguration.class);
-    var accountDatabaseTable = injector().getInstance(GoogleAccountDatabaseTable.class);
     var repository = ActionRepository.create();
     repository.registerAction(DocumentCreateAction.create(googleConfiguration,
-      accountDatabaseTable, googleAccountSelect, databaseConnection,
+      googleAccountDatabaseTable, googleAccountSelect, databaseConnection,
       databaseKeyspace));
     repository.registerAction(DocumentAppendLineAction.create(googleConfiguration,
-      accountDatabaseTable, googleAccountSelect, databaseConnection,
+      googleAccountDatabaseTable, googleAccountSelect, databaseConnection,
       databaseKeyspace));
     return repository;
   }
