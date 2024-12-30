@@ -24,14 +24,7 @@
   "google.docs.action.document.create.output.document.id": "Document ID",
   "google.docs.action.document.create.output.document.name": "Document Name",
   "google.docs.action.document.create.output.document.content": "Document Content",
-
-  "google.docs.action.document.delete.name": "Document Delete",
-  "google.docs.action.document.delete.description": "Is used to delete a document",
-  "google.docs.action.document.delete.input.account.name": "Account",
-  "google.docs.action.document.delete.input.account.description": "The Google account whose documents you want to work with",
-  "google.docs.action.document.delete.input.document.id.name": "Document ID",
-  "google.docs.action.document.delete.input.document.id.description": "The id of the document you want to delete",
-  "google.docs.action.document.delete.output.document.id": "Document ID",
+  "google.docs.action.document.create.failure.account.not.found": "An error occurred when creating a new Google Docs document. The error occurred because the specified Google account could not be found.",
 
   "google.docs.action.document.append.line.name": "Document Append Line",
   "google.docs.action.document.append.line.description": "Is used to append a line to a document",
@@ -42,5 +35,6 @@
   "google.docs.action.document.append.line.input.document.line.name": "Document Line",
   "google.docs.action.document.append.line.input.document.line.description": "The line you want to append to the document",
   "google.docs.action.document.append.line.output.document.id": "Document ID",
-  "google.docs.action.document.append.line.output.document.line": "Document Line"
+  "google.docs.action.document.append.line.output.document.line": "Document Line",
+  "google.docs.action.document.append.line.failure.account.not.found": "An error occurred when appending a new line to Google Docs document. The error occurred because the specified Google account could not be found."
 }

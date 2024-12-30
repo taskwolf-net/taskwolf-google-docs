@@ -1,5 +1,6 @@
 package com.dulno.google.docs.action.create;
 
+import com.dulno.google.account.GoogleUserAccountDatabaseTable;
 import com.google.api.client.auth.oauth2.Credential;
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.json.gson.GsonFactory;
@@ -15,13 +16,17 @@ import com.dulno.google.GoogleConfiguration;
 import com.dulno.google.account.GoogleAccountDatabaseTable;
 import com.dulno.google.account.GoogleCredential;
 
+import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 
 @AllArgsConstructor(staticName = "create")
 public final class DocumentCreateActionExecutor implements ActionExecutor {
   private final GoogleConfiguration configuration;
   private final GoogleAccountDatabaseTable googleAccountDatabaseTable;
+  private final GoogleUserAccountDatabaseTable googleUserAccountDatabaseTable;
+  private final UUID owner;
   private final String googleAccount;
   private String documentName;
   private String documentContent;
@@ -31,6 +36,26 @@ public final class DocumentCreateActionExecutor implements ActionExecutor {
     var dissolve = PlaceholderDissolve.create(information);
     documentName = dissolve.dissolve(documentName);
     documentContent = dissolve.dissolve(documentContent);
+    return googleUserAccountDatabaseTable.accountExists(owner)
+      .thenCompose(this::checkOwnerAccounts);
+  }
+
+  private CompletableFuture<ActionResult> checkOwnerAccounts(boolean hasAccounts) {
+    if (!hasAccounts) {
+      return ActionResult.futureFailure("google.docs.action.document.create.failure.account.not.found");
+    }
+    return googleUserAccountDatabaseTable.findAccounts(owner)
+      .thenCompose(this::checkOwnerAccounts);
+  }
+
+  private CompletableFuture<ActionResult> checkOwnerAccounts(List<String> accounts) {
+    if (!accounts.contains(googleAccount)) {
+      return ActionResult.futureFailure("google.docs.action.document.create.failure.account.not.found");
+    }
+    return createDocument();
+  }
+
+  private CompletableFuture<ActionResult> createDocument() {
     var futureResponse = new CompletableFuture<ActionResult>();
     googleAccountDatabaseTable.findAccount(googleAccount).thenAcceptAsync(account ->
       futureResponse.complete(ActionResult.success(buildInformation(

@@ -75,11 +75,11 @@ public final class GoogleDocsModule extends Integration {
     var databaseKeyspace = injector().getInstance(DatabaseKeyspace.class);
     var repository = ActionRepository.create();
     repository.registerAction(DocumentCreateAction.create(googleConfiguration,
-      googleAccountDatabaseTable, googleAccountSelect, databaseConnection,
-      databaseKeyspace));
+      googleAccountDatabaseTable, googleUserAccountDatabaseTable,
+      googleAccountSelect, databaseConnection, databaseKeyspace));
     repository.registerAction(DocumentAppendLineAction.create(googleConfiguration,
-      googleAccountDatabaseTable, googleAccountSelect, databaseConnection,
-      databaseKeyspace));
+      googleAccountDatabaseTable, googleUserAccountDatabaseTable,
+      googleAccountSelect, databaseConnection, databaseKeyspace));
     return repository;
   }
 }

@@ -1,5 +1,6 @@
 package com.dulno.google.docs.action.append;
 
+import com.dulno.google.account.GoogleUserAccountDatabaseTable;
 import com.google.common.collect.Lists;
 import lombok.AllArgsConstructor;
 import com.dulno.workflow.action.Action;
@@ -23,20 +24,25 @@ public final class DocumentAppendLineAction implements Action<DocumentAppendLine
   public static DocumentAppendLineAction create(
     GoogleConfiguration googleConfiguration,
     GoogleAccountDatabaseTable googleAccountDatabaseTable,
+    GoogleUserAccountDatabaseTable googleUserAccountDatabaseTable,
     InputComponentSelect googleAccountSelect,
     DatabaseConnection databaseConnection, DatabaseKeyspace databaseKeyspace
   ) {
     var contentColumns = Lists.<DatabaseColumn>newArrayList();
+    contentColumns.add(DatabaseColumn.create("owner", DatabaseDataType.UUID));
     contentColumns.add(DatabaseColumn.create("googleAccount", DatabaseDataType.TEXT));
     contentColumns.add(DatabaseColumn.create("documentId", DatabaseDataType.TEXT));
     contentColumns.add(DatabaseColumn.create("documentLine", DatabaseDataType.TEXT));
-    return new DocumentAppendLineAction(googleConfiguration, googleAccountDatabaseTable,
-      googleAccountSelect, ActionContentDatabaseTable.create(databaseConnection,
-      databaseKeyspace, "action_google_docs_document_append_line", contentColumns));
+    return new DocumentAppendLineAction(googleConfiguration,
+      googleAccountDatabaseTable, googleUserAccountDatabaseTable,
+      googleAccountSelect,
+      ActionContentDatabaseTable.create(databaseConnection, databaseKeyspace,
+        "action_google_docs_document_append_line", contentColumns));
   }
 
   private final GoogleConfiguration googleConfiguration;
   private final GoogleAccountDatabaseTable googleAccountDatabaseTable;
+  private final GoogleUserAccountDatabaseTable googleUserAccountDatabaseTable;
   private final InputComponentSelect googleAccountSelect;
   private final ActionContentDatabaseTable contentDatabaseTable;
 
@@ -67,8 +73,10 @@ public final class DocumentAppendLineAction implements Action<DocumentAppendLine
   }
 
   @Override
-  public CompletableFuture<Void> insert(UUID actionId, Map<String, Object> content) {
-    return contentDatabaseTable.insertContent(actionId, DatabaseRow.of(
+  public CompletableFuture<Void> insert(
+    UUID actionId, UUID ownerId, Map<String, Object> content
+  ) {
+    return contentDatabaseTable.insertContent(actionId, DatabaseRow.of(ownerId,
       content.get("googleAccount"), content.get("documentId"),
       content.get("documentLine")));
   }
@@ -76,17 +84,18 @@ public final class DocumentAppendLineAction implements Action<DocumentAppendLine
   @Override
   public CompletableFuture<Map<String, Object>> findContent(UUID actionId) {
     return contentDatabaseTable.findContent(actionId).thenApply(row ->
-      Map.of("googleAccount", row.findCell(1).stringValue(), "documentId",
-        row.findCell(2).stringValue(), "documentLine",
-        row.findCell(3).stringValue()));
+      Map.of("googleAccount", row.findCell(2).stringValue(),
+        "documentId", row.findCell(3).stringValue(),
+        "documentLine", row.findCell(4).stringValue()));
   }
 
   @Override
   public CompletableFuture<DocumentAppendLineActionExecutor> build(UUID actionId) {
     return contentDatabaseTable.findContent(actionId).thenApply(content ->
       DocumentAppendLineActionExecutor.create(googleConfiguration,
-        googleAccountDatabaseTable, content.findCell(1).stringValue(),
-        content.findCell(2).stringValue(), content.findCell(3).stringValue()));
+        googleAccountDatabaseTable, googleUserAccountDatabaseTable,
+        content.findCell(1).uuidValue(), content.findCell(2).stringValue(),
+        content.findCell(3).stringValue(), content.findCell(4).stringValue()));
   }
 
   @Override

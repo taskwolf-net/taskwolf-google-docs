@@ -1,5 +1,6 @@
 package com.dulno.google.docs.action.create;
 
+import com.dulno.google.account.GoogleUserAccountDatabaseTable;
 import com.google.common.collect.Lists;
 import lombok.AllArgsConstructor;
 import com.dulno.workflow.action.Action;
@@ -22,20 +23,25 @@ public final class DocumentCreateAction implements Action<DocumentCreateActionEx
   public static DocumentCreateAction create(
     GoogleConfiguration googleConfiguration,
     GoogleAccountDatabaseTable googleAccountDatabaseTable,
+    GoogleUserAccountDatabaseTable googleUserAccountDatabaseTable,
     InputComponentSelect googleAccountSelect,
     DatabaseConnection databaseConnection, DatabaseKeyspace databaseKeyspace
   ) {
     var contentColumns = Lists.<DatabaseColumn>newArrayList();
+    contentColumns.add(DatabaseColumn.create("owner", DatabaseDataType.UUID));
     contentColumns.add(DatabaseColumn.create("googleAccount", DatabaseDataType.TEXT));
     contentColumns.add(DatabaseColumn.create("documentName", DatabaseDataType.TEXT));
     contentColumns.add(DatabaseColumn.create("documentContent", DatabaseDataType.TEXT));
-    return new DocumentCreateAction(googleConfiguration, googleAccountDatabaseTable,
-      googleAccountSelect, ActionContentDatabaseTable.create(databaseConnection,
-      databaseKeyspace, "action_google_docs_document_create", contentColumns));
+    return new DocumentCreateAction(googleConfiguration,
+      googleAccountDatabaseTable, googleUserAccountDatabaseTable,
+      googleAccountSelect,
+      ActionContentDatabaseTable.create(databaseConnection, databaseKeyspace,
+        "action_google_docs_document_create", contentColumns));
   }
 
   private final GoogleConfiguration googleConfiguration;
   private final GoogleAccountDatabaseTable googleAccountDatabaseTable;
+  private final GoogleUserAccountDatabaseTable googleUserAccountDatabaseTable;
   private final InputComponentSelect googleAccountSelect;
   private final ActionContentDatabaseTable contentDatabaseTable;
 
@@ -67,8 +73,10 @@ public final class DocumentCreateAction implements Action<DocumentCreateActionEx
   }
 
   @Override
-  public CompletableFuture<Void> insert(UUID actionId, Map<String, Object> content) {
-    return contentDatabaseTable.insertContent(actionId, DatabaseRow.of(
+  public CompletableFuture<Void> insert(
+    UUID actionId, UUID ownerId, Map<String, Object> content
+  ) {
+    return contentDatabaseTable.insertContent(actionId, DatabaseRow.of(ownerId,
       content.get("googleAccount"), content.get("documentName"),
       content.get("documentContent")));
   }
@@ -76,17 +84,18 @@ public final class DocumentCreateAction implements Action<DocumentCreateActionEx
   @Override
   public CompletableFuture<Map<String, Object>> findContent(UUID actionId) {
     return contentDatabaseTable.findContent(actionId).thenApply(row ->
-      Map.of("googleAccount", row.findCell(1).stringValue(), "documentName",
-        row.findCell(2).stringValue(), "documentContent",
-        row.findCell(3).stringValue()));
+      Map.of("googleAccount", row.findCell(2).stringValue(),
+        "documentName", row.findCell(3).stringValue(),
+        "documentContent", row.findCell(4).stringValue()));
   }
 
   @Override
   public CompletableFuture<DocumentCreateActionExecutor> build(UUID actionId) {
     return contentDatabaseTable.findContent(actionId).thenApply(content ->
       DocumentCreateActionExecutor.create(googleConfiguration,
-        googleAccountDatabaseTable, content.findCell(1).stringValue(),
-        content.findCell(2).stringValue(), content.findCell(3).stringValue()));
+        googleAccountDatabaseTable, googleUserAccountDatabaseTable,
+        content.findCell(1).uuidValue(), content.findCell(2).stringValue(),
+        content.findCell(3).stringValue(), content.findCell(4).stringValue()));
   }
 
   @Override
