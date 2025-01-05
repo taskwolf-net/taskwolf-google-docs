@@ -76,9 +76,10 @@ public final class DocumentAppendLineAction implements Action<DocumentAppendLine
   public CompletableFuture<Void> insert(
     UUID actionId, UUID ownerId, Map<String, Object> content
   ) {
+    var documentLine = content.get("documentLine");
     return contentDatabaseTable.insertContent(actionId, DatabaseRow.of(ownerId,
       content.get("googleAccount"), content.get("documentId"),
-      content.get("documentLine")));
+      documentLine == null ? "" : documentLine));
   }
 
   @Override

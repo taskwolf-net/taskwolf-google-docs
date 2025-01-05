@@ -76,9 +76,10 @@ public final class DocumentCreateAction implements Action<DocumentCreateActionEx
   public CompletableFuture<Void> insert(
     UUID actionId, UUID ownerId, Map<String, Object> content
   ) {
+    var documentContent = content.get("documentContent");
     return contentDatabaseTable.insertContent(actionId, DatabaseRow.of(ownerId,
       content.get("googleAccount"), content.get("documentName"),
-      content.get("documentContent")));
+      documentContent == null ? "" : documentContent));
   }
 
   @Override
