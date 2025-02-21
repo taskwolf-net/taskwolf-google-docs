@@ -67,7 +67,7 @@ dependencies {
   compileOnly("org.json:json:20250107")
   compileOnly("commons-io:commons-io:2.18.0")
 
-  compileOnly("org.springframework.boot:spring-boot-starter-web:3.4.2")
+  compileOnly("org.springframework.boot:spring-boot-starter-web:3.4.3")
 
   implementation("com.google.apis:google-api-services-docs:v1-rev20240730-2.0.0")
 }
