@@ -1,5 +1,6 @@
 package com.dulno.google.docs;
 
+import com.dulno.core.environment.DulnoEnvironment;
 import com.dulno.workflow.integration.Integration;
 import com.google.inject.Injector;
 import com.dulno.core.account.AccountLink;
@@ -44,7 +45,8 @@ public final class GoogleDocsModule extends Integration {
     googleUserAccountDatabaseTable = injector().getInstance(Key.get(
       GoogleUserAccountDatabaseTable.class, Names.named("googleDocsUserAccount")));
     accountLink = GoogleDocsAccountLink.create(googleConfiguration,
-      googleAccountDatabaseTable, googleUserAccountDatabaseTable);
+      googleAccountDatabaseTable, googleUserAccountDatabaseTable,
+      injector().getInstance(DulnoEnvironment.class));
     injector().getInstance(GoogleAccountLinkRepository.class)
       .registerGoogleAccountLink(accountLink);
     googleAccountSelect = GoogleAccountSelect.create(googleAccountDatabaseTable,
