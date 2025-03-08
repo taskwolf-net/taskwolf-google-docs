@@ -69,7 +69,7 @@ dependencies {
 
   compileOnly("org.springframework.boot:spring-boot-starter-web:3.4.3")
 
-  implementation("com.google.apis:google-api-services-docs:v1-rev20240730-2.0.0")
+  implementation("com.google.apis:google-api-services-docs:v1-rev20250218-2.0.0")
 }
 
 tasks.test {
